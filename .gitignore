@@ -16,9 +16,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-*private
-*private.properties
-*private.xml
+private
+private.properties
+private.xml
 
 # =========================
 # Operating System Files
