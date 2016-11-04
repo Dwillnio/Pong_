@@ -16,7 +16,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-private
+private/
 private.properties
 private.xml
 
