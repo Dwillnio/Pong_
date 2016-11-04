@@ -31,6 +31,11 @@ public class Score implements Drawable{
     public int getScoreRight() {
         return scoreRight;
     }
+    
+    public void reset() {
+        scoreLeft = 0;
+        scoreRight = 0;
+    }
 
     // Method used in combination with the CollisionHandler
     // Changes score and returns false if max score is reached

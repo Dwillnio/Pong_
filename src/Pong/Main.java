@@ -11,4 +11,4 @@ public class Main {
 
 }
 
-//TODO  comment everything; ball changes speed and direction; Fix the collision System; AI; game end screen;
+//TODO  AI; game end screen;

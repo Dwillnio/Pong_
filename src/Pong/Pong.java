@@ -1,7 +1,6 @@
 package Pong;
 
 /* Combines all classes to create the game */
-
 import Pong.Objects.*;
 import Pong.Physics.CollisionDetecter;
 import Pong.Physics.CollisionHandler;
@@ -33,7 +32,7 @@ public class Pong {
 
     private boolean continues;
     private double lastFrameTime; //milliSec
-    public final static int COLLISION_COOLDOWN = (int)(FPS_TARGET/ (1000/STANDARD_FRAMETIME) * 10);
+    public final static int COLLISION_COOLDOWN = (int) (FPS_TARGET / (1000 / STANDARD_FRAMETIME) * 10);
 
     //Standard game init
     public Pong() {
@@ -44,7 +43,7 @@ public class Pong {
     //then calling a specifing constructing function depending on the gamemode
     public Pong(GameMode gameMode) {
 
-        ball = new Ball(new Coor2D(Userinterface.WIDTH/2 , Userinterface.HEIGHT/2), new Vector2D(2.5f, 1.5f));
+        ball = new Ball(new Coor2D(Userinterface.WIDTH / 2, Userinterface.HEIGHT / 2), new Vector2D(2.5f, 1.5f));
         platforms = new ArrayList<>();
         movablePlatforms = new ArrayList<>();
         platformMovement = new PlatformMovement(Userinterface.HEIGHT);
@@ -69,16 +68,16 @@ public class Pong {
     private void twoPlayerInit() {
         this.gameMode = GameMode.TWOPLAYER;
 
-        platforms.add(new MovablePlatform(platformMovement, new Coor2D(50, Userinterface.HEIGHT/2 - 50)));
+        platforms.add(new MovablePlatform(platformMovement, new Coor2D(50, Userinterface.HEIGHT / 2 - 50)));
         movablePlatforms.add((MovablePlatform) platforms.get(0));
-        platforms.add(new MovablePlatform(platformMovement, new Coor2D(Userinterface.WIDTH - 50, Userinterface.HEIGHT/2 - 50)));
+        platforms.add(new MovablePlatform(platformMovement, new Coor2D(Userinterface.WIDTH - 50, Userinterface.HEIGHT / 2 - 50)));
         movablePlatforms.add((MovablePlatform) platforms.get(1));
     }
 
     private void singlePlayerInit() {
         this.gameMode = GameMode.SINGLEPLAYER;
 
-        platforms.add(new MovablePlatform(platformMovement, new Coor2D(50, Userinterface.HEIGHT/2 - 50)));
+        platforms.add(new MovablePlatform(platformMovement, new Coor2D(50, Userinterface.HEIGHT / 2 - 50)));
         movablePlatforms.add((MovablePlatform) platforms.get(0));
         platforms.add(new MovablePlatform(platformMovement, new Coor2D(Userinterface.WIDTH, 0), Userinterface.HEIGHT, 30));
         movablePlatforms.add((MovablePlatform) platforms.get(1));
@@ -108,14 +107,21 @@ public class Pong {
     public void start() {
         try {
             SwingUtilities.invokeLater(userinterface);
-            while(userinterface.getDrawingBoard() == null) {
+            while (userinterface.getDrawingBoard() == null) {
                 Thread.sleep(500);
             }
 
             Thread.sleep(1000);
 
-            gameLoop();
-
+            while(true) {
+                gameLoop();
+                if(JOptionPane.showConfirmDialog(null, "Game ended, restart?", "Pong", JOptionPane.YES_NO_OPTION) != 0) {
+                    System.exit(0);
+                }
+                reset();
+                score.reset();
+            }
+            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "ERROR");
             ex.printStackTrace();
@@ -123,13 +129,13 @@ public class Pong {
     }
 
     /* Starts the loop the game goes through every frame */
-    private void gameLoop() throws InterruptedException{
+    private void gameLoop() throws InterruptedException {
         int scoreChange;
         long deltaTime;
         long deltaFactorTime;
 
         continues = true;
-        while(continues) {
+        while (continues) {
             deltaTime = System.nanoTime();
             deltaFactorTime = System.nanoTime();
 
@@ -142,13 +148,13 @@ public class Pong {
             userinterface.update();                 //Repaints the drawingboard
 
             deltaTime = (System.nanoTime() - deltaTime);   //sets deltatimemillis as the time difference in milli secs
-            if ((double)deltaTime < FRAMETIME_MILLIS_TARGET * 1000000) {
-                double ddT = FRAMETIME_MILLIS_TARGET* 1000000 - deltaTime;
-                Thread.sleep((long)ddT / 1000000, (int)(ddT%1000000));
+            if ((double) deltaTime < FRAMETIME_MILLIS_TARGET * 1000000) {
+                double ddT = FRAMETIME_MILLIS_TARGET * 1000000 - deltaTime;
+                Thread.sleep((long) ddT / 1000000, (int) (ddT % 1000000));
             }
-            
-            lastFrameTime = ((double)(System.nanoTime() - deltaFactorTime)) / 1000000; 
-            if(lastFrameTime > 40) {
+
+            lastFrameTime = ((double) (System.nanoTime() - deltaFactorTime)) / 1000000;
+            if (lastFrameTime > 40) {
                 lastFrameTime = 40;
             }
         }
@@ -156,7 +162,7 @@ public class Pong {
 
     // To be used after a goal has been scored, places all movable object back on their startingposition
     public void reset() {
-        ball.setPosition(new Coor2D(Userinterface.WIDTH/2 , Userinterface.HEIGHT/2));
+        ball.setPosition(new Coor2D(Userinterface.WIDTH / 2, Userinterface.HEIGHT / 2));
         ball.velocity().changeLength(2.0f);
 
         resetMovablePlatforms();
@@ -164,11 +170,12 @@ public class Pong {
 
         try {
             Thread.sleep(1000);
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
     }
 
     private void resetMovablePlatforms() {
-        for(MovablePlatform movablePlatform: movablePlatforms) {
+        for (MovablePlatform movablePlatform : movablePlatforms) {
             movablePlatform.setPosition(movablePlatform.getStartingPosition());
         }
     }
@@ -179,7 +186,7 @@ public class Pong {
 
     //Moves all movingplatforms depending on their flags and whether they would stay in bounds
     private void movePlatforms() {
-        for(MovablePlatform movablePlatform: movablePlatforms) {
+        for (MovablePlatform movablePlatform : movablePlatforms) {
             movablePlatform.update(lastFrameTime);
         }
     }
